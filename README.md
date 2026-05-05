@@ -206,30 +206,4 @@ CREATE TABLE transactions (
 > Both are installable via: `pip install flask reportlab`
 > SQLite and Werkzeug come bundled with Python and Flask respectively.
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to fork this repository, open issues, or submit pull requests.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Open a Pull Request
-
----
-
-## 📝 License
-
-This project is open source and available for personal and educational use.
-
----
-
-<div align="center">
-
-**⭐ Star this repo if you found it useful!**
-
-Made with ❤️ using Python & Flask
-
 </div>
