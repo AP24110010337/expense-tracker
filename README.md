@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 💰 Expense Tracker
 
@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/ReportLab-PDF-red?style=for-the-badge" alt="ReportLab" />
 </p>
 
-**A full-featured personal finance web application built with Flask, SQLite, and Chart.js.**  
+**A full-featured personal finance web application built with Flask, SQLite, and Chart.js.**
 Track income & expenses, visualize spending trends, and export professional reports — all from a sleek, responsive dashboard.
 
 ---
@@ -91,7 +91,7 @@ expense_tracker/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/expense-tracker.git
+   git clone https://github.com/AP24110010337/expense-tracker.git
    cd expense-tracker
    ```
 
@@ -203,7 +203,7 @@ CREATE TABLE transactions (
 | `flask` | Web framework (routing, templates, sessions) |
 | `reportlab` | PDF report generation |
 
-> Both are installable via: `pip install flask reportlab`  
+> Both are installable via: `pip install flask reportlab`
 > SQLite and Werkzeug come bundled with Python and Flask respectively.
 
 ---
@@ -233,4 +233,3 @@ This project is open source and available for personal and educational use.
 Made with ❤️ using Python & Flask
 
 </div>
-]]>
