@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Add Transaction | Expense Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Transaction</p>
+        <h1>Add Transaction</h1>
+    </div>
+</section>
+
+<section class="form-panel">
+    <form class="transaction-form" id="transactionForm" method="post" action="{{ url_for('add_transaction') }}" novalidate>
+        <div class="form-group">
+            <span class="label-text">Type</span>
+            <div class="segmented-control" role="radiogroup" aria-label="Transaction type">
+                <label>
+                    <input type="radio" name="type" value="income" {% if form.get('type', 'expense') == 'income' %}checked{% endif %}>
+                    <span>Income</span>
+                </label>
+                <label>
+                    <input type="radio" name="type" value="expense" {% if form.get('type', 'expense') == 'expense' %}checked{% endif %}>
+                    <span>Expense</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <label class="form-group" for="amount">
+                <span class="label-text">Amount</span>
+                <input class="control" id="amount" name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" value="{{ form.get('amount', '') }}" required>
+            </label>
+
+            <label class="form-group" for="category_id">
+                <span class="label-text">Category</span>
+                <select class="control" id="category_id" name="category_id" required>
+                    <option value="">Select category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if form.get('category_id') == category.id|string %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label class="form-group" for="date">
+                <span class="label-text">Date</span>
+                <input class="control" id="date" name="date" type="date" value="{{ form.get('date', today) }}" required>
+            </label>
+        </div>
+
+        <label class="form-group" for="description">
+            <span class="label-text">Description</span>
+            <textarea class="control" id="description" name="description" rows="4" maxlength="180">{{ form.get('description', '') }}</textarea>
+        </label>
+
+        <div class="form-error" id="formError" role="alert" hidden></div>
+
+        <div class="form-actions">
+            <button type="submit" class="button primary-button">Save Transaction</button>
+            <a href="{{ url_for('dashboard') }}" class="button secondary-button">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

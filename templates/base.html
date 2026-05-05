@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Expense Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="{{ url_for('dashboard') }}" class="brand">Expense Tracker</a>
+                <p class="sidebar-month">{{ sidebar_month_label }}</p>
+            </div>
+
+            <nav class="nav-links" aria-label="Primary">
+                <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a class="nav-link {% if request.endpoint == 'add_transaction' %}active{% endif %}" href="{{ url_for('add_transaction') }}">Add</a>
+                <a class="nav-link {% if request.endpoint == 'history' %}active{% endif %}" href="{{ url_for('history') }}">History</a>
+                <a class="nav-link {% if request.endpoint == 'reports_page' %}active{% endif %}" href="{{ url_for('reports_page') }}">Reports</a>
+            </nav>
+
+            <div class="sidebar-card">
+                <span class="sidebar-card-label">Current savings</span>
+                <strong class="{% if sidebar_savings < 0 %}negative{% else %}positive{% endif %}">
+                    {{ sidebar_savings|currency }}
+                </strong>
+            </div>
+
+            {% if current_user %}
+                <div class="sidebar-account">
+                    <span class="sidebar-card-label">Signed in as</span>
+                    <strong>{{ current_user }}</strong>
+                    <form method="post" action="{{ url_for('logout') }}">
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
+                </div>
+            {% endif %}
+        </aside>
+
+        <button class="sidebar-backdrop" type="button" data-menu-close aria-label="Close menu"></button>
+
+        <main class="main-content">
+            <header class="mobile-header">
+                <button class="menu-button" type="button" data-menu-toggle aria-controls="sidebar" aria-expanded="false">
+                    Menu
+                </button>
+                <a href="{{ url_for('dashboard') }}" class="mobile-brand">Expense Tracker</a>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-stack" role="status" aria-live="polite">
+                        {% for category, message in messages %}
+                            <div class="flash flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

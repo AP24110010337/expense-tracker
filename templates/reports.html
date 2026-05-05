@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Reports | Expense Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Exports</p>
+        <h1>{{ selected_month|month_label }}</h1>
+    </div>
+</section>
+
+<section class="filter-panel">
+    <form class="report-form" method="get" action="{{ url_for('reports_page') }}">
+        <label class="form-group" for="reportMonth">
+            <span class="label-text">Month</span>
+            <select class="control" id="reportMonth" name="month" data-report-month>
+                {% for month in month_options %}
+                    <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>
+                        {{ month.label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <div class="filter-actions">
+            <button type="submit" class="button secondary-button">Preview</button>
+            <a class="button primary-button" data-export-csv href="{{ url_for('export_csv', month=selected_month) }}">Export CSV</a>
+            <a class="button primary-button" data-export-pdf href="{{ url_for('export_pdf', month=selected_month) }}">Export PDF</a>
+        </div>
+    </form>
+</section>
+
+<section class="summary-grid" aria-label="Report summary">
+    <article class="summary-card">
+        <span>Total Income</span>
+        <strong>{{ summary.income|currency }}</strong>
+    </article>
+    <article class="summary-card">
+        <span>Total Expenses</span>
+        <strong>{{ summary.expense|currency }}</strong>
+    </article>
+    <article class="summary-card">
+        <span>Net Savings</span>
+        <strong class="{% if summary.savings < 0 %}negative{% else %}positive{% endif %}">
+            {{ summary.savings|currency }}
+        </strong>
+    </article>
+</section>
+
+<section class="dashboard-grid">
+    <article class="panel">
+        <div class="panel-header">
+            <h2>Category Breakdown</h2>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table compact-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in category_breakdown %}
+                        <tr>
+                            <td>{{ item.category }}</td>
+                            <td class="amount">{{ item.total|currency }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="empty-state">No expenses for this month.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel">
+        <div class="panel-header">
+            <h2>Transactions</h2>
+        </div>
+        <div class="table-wrap report-preview">
+            <table class="data-table compact-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                        <tr class="transaction-row {{ tx.type }}">
+                            <td>{{ tx.date }}</td>
+                            <td>{{ tx.type.title() }}</td>
+                            <td>{{ tx.category }}</td>
+                            <td class="amount">{{ tx.amount|currency }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No transactions for this month.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}

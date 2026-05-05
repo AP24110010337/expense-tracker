@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Expense Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>{{ selected_month|month_label }}</h1>
+    </div>
+    <div class="header-actions">
+        <label for="dashboardMonth" class="sr-only">Month</label>
+        <select id="dashboardMonth" class="control" data-selected-month="{{ selected_month }}">
+            {% for month in month_options %}
+                <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>
+                    {{ month.label }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</section>
+
+<section class="summary-grid" aria-label="Monthly summary">
+    <article class="summary-card">
+        <span>Total Income</span>
+        <strong id="summaryIncome">{{ summary.income|currency }}</strong>
+    </article>
+    <article class="summary-card">
+        <span>Total Expenses</span>
+        <strong id="summaryExpense">{{ summary.expense|currency }}</strong>
+    </article>
+    <article class="summary-card">
+        <span>Net Savings</span>
+        <strong id="summarySavings" class="{% if summary.savings < 0 %}negative{% else %}positive{% endif %}">
+            {{ summary.savings|currency }}
+        </strong>
+    </article>
+</section>
+
+<section class="dashboard-grid">
+    <article class="panel chart-panel">
+        <div class="panel-header">
+            <h2>Expense Breakdown</h2>
+        </div>
+        <div class="chart-box">
+            <canvas id="categoryChart" aria-label="Expense breakdown by category"></canvas>
+        </div>
+        <p class="empty-chart" id="categoryEmpty" hidden>No expenses for this month.</p>
+    </article>
+
+    <article class="panel chart-panel">
+        <div class="panel-header">
+            <h2>Income vs Expense</h2>
+        </div>
+        <div class="chart-box">
+            <canvas id="trendChart" aria-label="Last six months income and expense trend"></canvas>
+        </div>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <h2>Recent Transactions</h2>
+        <a href="{{ url_for('history') }}" class="text-link">View all</a>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in recent_transactions %}
+                    <tr class="transaction-row {{ tx.type }}">
+                        <td>{{ tx.date }}</td>
+                        <td><span class="badge badge-{{ tx.type }}">{{ tx.type.title() }}</span></td>
+                        <td>{{ tx.category }}</td>
+                        <td class="amount">{{ tx.amount|currency }}</td>
+                        <td>{{ tx.description or "-" }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">No transactions yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

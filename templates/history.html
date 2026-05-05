@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}History | Expense Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Transactions</p>
+        <h1>History</h1>
+    </div>
+    <div class="balance-pill {% if balance < 0 %}negative-bg{% else %}positive-bg{% endif %}">
+        <span>Running balance</span>
+        <strong>{{ balance|currency }}</strong>
+    </div>
+</section>
+
+<section class="filter-panel">
+    <form class="filter-form" method="get" action="{{ url_for('history') }}">
+        <label class="form-group" for="month">
+            <span class="label-text">Month</span>
+            <select class="control" id="month" name="month">
+                <option value="">All months</option>
+                {% for month in month_options %}
+                    <option value="{{ month.value }}" {% if filters.month == month.value %}selected{% endif %}>
+                        {{ month.label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label class="form-group" for="type">
+            <span class="label-text">Type</span>
+            <select class="control" id="type" name="type">
+                <option value="">All types</option>
+                <option value="income" {% if filters.type == "income" %}selected{% endif %}>Income</option>
+                <option value="expense" {% if filters.type == "expense" %}selected{% endif %}>Expense</option>
+            </select>
+        </label>
+
+        <label class="form-group" for="category_id">
+            <span class="label-text">Category</span>
+            <select class="control" id="category_id" name="category_id">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if filters.category_id == category.id|string %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <div class="filter-actions">
+            <button type="submit" class="button primary-button">Apply</button>
+            <a href="{{ url_for('history') }}" class="button secondary-button">Reset</a>
+        </div>
+    </form>
+</section>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table class="data-table history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                    <tr class="transaction-row {{ tx.type }}">
+                        <td>{{ tx.date }}</td>
+                        <td><span class="badge badge-{{ tx.type }}">{{ tx.type.title() }}</span></td>
+                        <td>{{ tx.category }}</td>
+                        <td class="amount">{{ tx.amount|currency }}</td>
+                        <td>{{ tx.description or "-" }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('delete_transaction', transaction_id=tx.id) }}" class="inline-form" data-confirm-delete>
+                                <input type="hidden" name="next" value="{{ request.full_path }}">
+                                <button type="submit" class="icon-button danger-button" title="Delete transaction">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">No transactions match these filters.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
